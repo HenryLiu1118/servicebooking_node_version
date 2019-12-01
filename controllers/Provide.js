@@ -20,7 +20,7 @@ exports.getMyProvide = async (req, res) => {
 exports.getAllProvide = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
 
     let allServices = await ServiceProvide.findAll();
     let services = allServices.slice(page * limit, page * limit + limit);
@@ -43,7 +43,7 @@ exports.getAllProvide = async (req, res) => {
 exports.getProvideByServiceName = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
     let serviceType = await ServiceType.findOne({
       where: { name: req.params.serviceName }
     });
@@ -75,7 +75,7 @@ exports.getProvideByServiceName = async (req, res) => {
 exports.getProvideByLanguage = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
 
     let language = await Language.findOne({
       where: { name: req.params.languageName }
@@ -108,7 +108,7 @@ exports.getProvideByLanguage = async (req, res) => {
 exports.getProvideByServiceNameAndLanguage = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
     let serviceType = await ServiceType.findOne({
       where: { name: req.params.serviceName }
     });
@@ -129,7 +129,7 @@ exports.getProvideByServiceNameAndLanguage = async (req, res) => {
     }
     let allServices = await ServiceProvide.findAll({
       where: {
-        serviceType_id: serviceType.id,
+        service_type_id: serviceType.id,
         language_id: language.id
       }
     });

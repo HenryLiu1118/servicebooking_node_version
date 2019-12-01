@@ -8,13 +8,14 @@ const { transferRequestToDto } = require('../middleware/Dto');
 exports.getAllRequest = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
 
     let allRequestOrder = await RequestOrder.findAll();
     let requestOrders = allRequestOrder.slice(
       page * limit,
       page * limit + limit
     );
+
     let returnRequestOrders = [];
     for (let requestOrder of requestOrders) {
       let requestOrderDto = await transferRequestToDto(requestOrder);
@@ -33,7 +34,7 @@ exports.getAllRequest = async (req, res) => {
 exports.getMyRequest = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
 
     let allRequestOrder = await RequestOrder.findAll({
       where: { user_id: req.userId }
@@ -60,7 +61,7 @@ exports.getMyRequest = async (req, res) => {
 exports.getRequestByServiceName = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
 
     let serviceType = await ServiceType.findOne({
       where: { name: req.params.serviceName }
@@ -96,7 +97,7 @@ exports.getRequestByServiceName = async (req, res) => {
 exports.getRequestByLanguage = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
 
     let language = await Language.findOne({
       where: { name: req.params.languageName }
@@ -131,7 +132,7 @@ exports.getRequestByLanguage = async (req, res) => {
 exports.getRequestByServiceNameAndLanguage = async (req, res) => {
   try {
     const page = req.query.page || 0;
-    const limit = 5;
+    const limit = +req.query.limit || 2;
     let serviceType = await ServiceType.findOne({
       where: { name: req.params.serviceName }
     });
@@ -153,7 +154,7 @@ exports.getRequestByServiceNameAndLanguage = async (req, res) => {
 
     let allRequestOrder = await RequestOrder.findAll({
       where: {
-        serviceType_id: serviceType.id,
+        service_type_id: serviceType.id,
         language_id: language.id
       }
     });

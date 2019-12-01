@@ -26,11 +26,11 @@ Language.hasMany(UserInfo, { as: 'UserInfo', foreignKey: 'language_id' });
 
 ServiceProvide.belongsTo(ServiceType, {
   as: 'ServiceType',
-  foreignKey: 'serviceType_id'
+  foreignKey: 'service_type_id'
 });
 ServiceType.hasMany(ServiceProvide, {
   as: 'ServiceProvide',
-  foreignKey: 'serviceType_id'
+  foreignKey: 'service_type_id'
 });
 
 ServiceProvide.belongsTo(Language, {
@@ -47,11 +47,11 @@ User.hasMany(RequestOrder, { as: 'RequestOrder', foreignKey: 'user_id' });
 
 RequestOrder.belongsTo(ServiceType, {
   as: 'ServiceType',
-  foreignKey: 'serviceType_id'
+  foreignKey: 'service_type_id'
 });
 ServiceType.hasMany(RequestOrder, {
   as: 'RequestOrder',
-  foreignKey: 'serviceType_id'
+  foreignKey: 'service_type_id'
 });
 
 RequestOrder.belongsTo(Language, { as: 'Language', foreignKey: 'language_id' });
@@ -62,9 +62,12 @@ Language.hasMany(RequestOrder, {
 
 Comment.belongsTo(RequestOrder, {
   as: 'RequestOrder',
-  foreignKey: 'requestOrder_id'
+  foreignKey: 'request_order_id'
 });
-RequestOrder.hasMany(Comment, { as: 'Comment', foreignKey: 'requestOrder_id' });
+RequestOrder.hasMany(Comment, {
+  as: 'Comment',
+  foreignKey: 'request_order_id'
+});
 
 Comment.belongsTo(User, { as: 'User', foreignKey: 'user_id' });
 User.hasMany(Comment, { as: 'Comment', foreignKey: 'user_id' });
