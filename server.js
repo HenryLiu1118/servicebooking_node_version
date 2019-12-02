@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const connectDB = require('./config/connectDB');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -9,16 +10,7 @@ dotenv.config({ path: './config/config.env' });
 const app = express();
 connectDB();
 app.use(express.json({ extend: false }));
-
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'OPTIONS, GET, POST, PUT, PATCH, DELETE'
-  );
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
+app.use(cors());
 
 app.use('/api/users', require('./routes/api/User'));
 app.use('/api/userinfo', require('./routes/api/UserInfo'));

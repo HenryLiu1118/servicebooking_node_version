@@ -2,21 +2,35 @@ const express = require('express');
 const router = express.Router();
 const { auth, authorize } = require('../../middleware/auth');
 const { check } = require('express-validator');
+const filterResult = require('../../middleware/resultFilter');
+const RequestOrder = require('../../models/RequestOrder');
 
 const {
-  getAllRequest,
+  getRequests,
   getMyRequest,
-  getRequestByServiceName,
-  getRequestByLanguage,
   getRequestById,
-  getRequestByServiceNameAndLanguage,
   deleteRequest,
   updateRequest,
   postRequest
 } = require('../../controllers/Request');
 
+router.use(auth);
+
+router
+  .route('/All')
+  .get(authorize('Service'), filterResult(RequestOrder), getRequests);
+router.route('/me').get(authorize('Customer'), getMyRequest);
+router.route('/name/:serviceName').get(filterResult(RequestOrder), getRequests);
+router
+  .route('/language/:languageName')
+  .get(filterResult(RequestOrder), getRequests);
+router.route('/list/:RequestId').get(getRequestById);
+router
+  .route('/:serviceName/:languageName')
+  .get(filterResult(RequestOrder), getRequests);
+router.route('/id/:RequestId').delete(deleteRequest);
+
 router.route('/').post(
-  auth,
   authorize('Customer'),
   [
     check('servicetype', 'Please enter a servicetype')
@@ -29,7 +43,7 @@ router.route('/').post(
   postRequest
 );
 
-router.route('/id/:RequestId').put(auth, authorize('Customer'), [
+router.route('/id/:RequestId').put(authorize('Customer'), [
   check('servicetype', 'Please enter a servicetype')
     .not()
     .isEmpty(),
@@ -38,15 +52,5 @@ router.route('/id/:RequestId').put(auth, authorize('Customer'), [
     .isEmpty(),
   updateRequest
 ]);
-
-router.route('/All').get(auth, authorize('Service'), getAllRequest);
-router.route('/me').get(auth, authorize('Customer'), getMyRequest);
-router.route('/name/:serviceName').get(auth, getRequestByServiceName);
-router.route('/language/:languageName').get(auth, getRequestByLanguage);
-router.route('/list/:RequestId').get(auth, getRequestById);
-router
-  .route('/:serviceName/:languageName')
-  .get(auth, getRequestByServiceNameAndLanguage);
-router.route('/id/:RequestId').delete(auth, deleteRequest);
 
 module.exports = router;

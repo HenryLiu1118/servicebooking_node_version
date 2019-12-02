@@ -11,8 +11,9 @@ const {
   checkCommentByRequestOrder
 } = require('../../controllers/Comment');
 
+router.use(auth);
+
 router.route('/post/:RequestOrderId').post(
-  auth,
   authorize('Service'),
   [
     check('detail', 'Please enter a detail')
@@ -22,9 +23,9 @@ router.route('/post/:RequestOrderId').post(
   postComment
 );
 
-router.route('/get/:RequestOrderId').get(auth, getCommentsByRequestOrder);
-router.route('/id/:CommentId').get(auth, getCommentById);
-router.route('/id/:CommentId').delete(auth, deleteComment);
-router.route('/check/:RequestOrderId').get(auth, checkCommentByRequestOrder);
+router.route('/get/:RequestOrderId').get(getCommentsByRequestOrder);
+router.route('/id/:CommentId').get(getCommentById);
+router.route('/id/:CommentId').delete(deleteComment);
+router.route('/check/:RequestOrderId').get(checkCommentByRequestOrder);
 
 module.exports = router;

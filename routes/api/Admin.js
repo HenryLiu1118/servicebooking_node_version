@@ -13,14 +13,14 @@ const {
   postRole
 } = require('../../controllers/Admin');
 
-router.route('/role').get(auth, authorize('Admin'), getRoles);
-router.route('/serviceType').get(auth, authorize('Admin'), getServiceTypes);
-router.route('/language').get(auth, authorize('Admin'), getLanguages);
-router.route('/user').get(auth, authorize('Admin'), getUsers);
+router.use('/', auth, authorize('Admin'));
+
+router.route('/role').get(getRoles);
+router.route('/serviceType').get(getServiceTypes);
+router.route('/language').get(getLanguages);
+router.route('/user').get(getUsers);
 
 router.route('/language').post(
-  auth,
-  authorize('Admin'),
   [
     check('name', 'Please enter a name')
       .not()
@@ -30,8 +30,6 @@ router.route('/language').post(
 );
 
 router.route('/role').post(
-  auth,
-  authorize('Admin'),
   [
     check('name', 'Please enter a name')
       .not()
@@ -41,8 +39,6 @@ router.route('/role').post(
 );
 
 router.route('/serviceType').post(
-  auth,
-  authorize('Admin'),
   [
     check('name', 'Please enter a name')
       .not()

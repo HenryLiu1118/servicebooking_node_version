@@ -8,21 +8,14 @@ const asyncHandler = require('../middleware/asyncHandler');
 const { validationResult } = require('express-validator');
 const { transferRequestToDto } = require('../middleware/Dto');
 
-exports.getAllRequest = asyncHandler(async (req, res, next) => {
-  const page = +req.query.page || 0;
-  const limit = +req.query.limit || 2;
+exports.getRequests = asyncHandler(async (req, res, next) => {
+  let requestOrders = await res.filterResult.returnModels;
+  let size = await res.filterResult.size;
+  let returnRequestOrders = await transferRequestToDtos(requestOrders);
 
-  let allRequestOrder = await RequestOrder.findAll();
-  let requestOrders = allRequestOrder.slice(page * limit, page * limit + limit);
-
-  let returnRequestOrders = [];
-  for (let requestOrder of requestOrders) {
-    let requestOrderDto = await transferRequestToDto(requestOrder);
-    returnRequestOrders.unshift(requestOrderDto);
-  }
   res.json({
     requestDtoList: returnRequestOrders,
-    size: allRequestOrder.length
+    size: size
   });
 });
 
@@ -33,110 +26,15 @@ exports.getMyRequest = asyncHandler(async (req, res, next) => {
   let allRequestOrder = await RequestOrder.findAll({
     where: { user_id: req.userId }
   });
+
   let requestOrders = allRequestOrder.slice(page * limit, page * limit + limit);
-  let returnRequestOrders = [];
-  for (let requestOrder of requestOrders) {
-    let requestOrderDto = await transferRequestToDto(requestOrder);
-    returnRequestOrders.unshift(requestOrderDto);
-  }
+  let returnRequestOrders = await transferRequestToDtos(requestOrders);
+
   res.json({
     requestDtoList: returnRequestOrders,
     size: allRequestOrder.length
   });
 });
-
-exports.getRequestByServiceName = asyncHandler(async (req, res, next) => {
-  const page = +req.query.page || 0;
-  const limit = +req.query.limit || 2;
-
-  let serviceType = await ServiceType.findOne({
-    where: { name: req.params.serviceName }
-  });
-
-  if (!serviceType) {
-    return next(new ErrorResponse('Service Type does not exists', 400));
-  }
-
-  let allRequestOrder = await serviceType.getRequestOrder();
-
-  let requestOrders = allRequestOrder.slice(page * limit, page * limit + limit);
-  let returnRequestOrders = [];
-  for (let requestOrder of requestOrders) {
-    let requestOrderDto = await transferRequestToDto(requestOrder);
-    returnRequestOrders.unshift(requestOrderDto);
-  }
-  res.json({
-    requestDtoList: returnRequestOrders,
-    size: allRequestOrder.length
-  });
-});
-
-exports.getRequestByLanguage = asyncHandler(async (req, res, next) => {
-  const page = +req.query.page || 0;
-  const limit = +req.query.limit || 2;
-
-  let language = await Language.findOne({
-    where: { name: req.params.languageName }
-  });
-
-  if (!language) {
-    return next(new ErrorResponse('language does not exists', 400));
-  }
-  let allRequestOrder = await language.getRequestOrder();
-
-  let requestOrders = allRequestOrder.slice(page * limit, page * limit + limit);
-  let returnRequestOrders = [];
-  for (let requestOrder of requestOrders) {
-    let requestOrderDto = await transferRequestToDto(requestOrder);
-    returnRequestOrders.unshift(requestOrderDto);
-  }
-  res.json({
-    requestDtoList: returnRequestOrders,
-    size: allRequestOrder.length
-  });
-});
-
-exports.getRequestByServiceNameAndLanguage = asyncHandler(
-  async (req, res, next) => {
-    const page = +req.query.page || 0;
-    const limit = +req.query.limit || 2;
-    let serviceType = await ServiceType.findOne({
-      where: { name: req.params.serviceName }
-    });
-
-    if (!serviceType) {
-      return next(new ErrorResponse('Service Type does not exists', 400));
-    }
-    let language = await Language.findOne({
-      where: { name: req.params.languageName }
-    });
-
-    if (!language) {
-      return next(new ErrorResponse('language does not exists', 400));
-    }
-
-    let allRequestOrder = await RequestOrder.findAll({
-      where: {
-        service_type_id: serviceType.id,
-        language_id: language.id
-      }
-    });
-
-    let requestOrders = allRequestOrder.slice(
-      page * limit,
-      page * limit + limit
-    );
-    let returnRequestOrders = [];
-    for (let requestOrder of requestOrders) {
-      let requestOrderDto = await transferRequestToDto(requestOrder);
-      returnRequestOrders.unshift(requestOrderDto);
-    }
-    res.json({
-      requestDtoList: returnRequestOrders,
-      size: allRequestOrder.length
-    });
-  }
-);
 
 exports.getRequestById = asyncHandler(async (req, res, next) => {
   let requestOrder = await RequestOrder.findByPk(req.params.RequestId);
@@ -219,3 +117,12 @@ exports.postRequest = asyncHandler(async (req, res, next) => {
   let returnRequest = await transferRequestToDto(requestOrder);
   res.json(returnRequest);
 });
+
+let transferRequestToDtos = async requestOrders => {
+  let returnRequestOrders = [];
+  for (let requestOrder of requestOrders) {
+    let requestOrderDto = await transferRequestToDto(requestOrder);
+    returnRequestOrders.unshift(requestOrderDto);
+  }
+  return returnRequestOrders;
+};

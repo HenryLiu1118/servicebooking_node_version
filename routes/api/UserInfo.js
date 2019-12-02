@@ -4,8 +4,9 @@ const { auth } = require('../../middleware/auth');
 const { check } = require('express-validator');
 const { getMyProfile, updateProfile } = require('../../controllers/UserInfo');
 
+router.use(auth);
+
 router.route('/').put(
-  auth,
   [
     check('firstname', 'Please enter a firstname')
       .not()
@@ -35,6 +36,6 @@ router.route('/').put(
   updateProfile
 );
 
-router.route('/me').get(auth, getMyProfile);
+router.route('/me').get(getMyProfile);
 
 module.exports = router;

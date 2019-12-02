@@ -15,113 +15,16 @@ exports.getMyProvide = asyncHandler(async (req, res, next) => {
   res.json(ans);
 });
 
-exports.getAllProvide = asyncHandler(async (req, res, next) => {
-  const page = +req.query.page || 0;
-  const limit = +req.query.limit || 2;
-
-  let allServices = await ServiceProvide.findAll();
-  let services = allServices.slice(page * limit, page * limit + limit);
-  let returnServices = [];
-  for (let service of services) {
-    let serviceDto = await transferServiceDto(service);
-    returnServices.unshift(serviceDto);
-  }
+exports.getAllProvides = asyncHandler(async (req, res, next) => {
+  let services = await res.filterResult.returnModels;
+  let size = await res.filterResult.size;
+  let returnServices = await transferServiceDtos(services);
 
   res.json({
     serviceDtoList: returnServices,
-    size: allServices.length
+    size: size
   });
 });
-
-exports.getProvideByServiceName = asyncHandler(async (req, res, next) => {
-  const page = +req.query.page || 0;
-  const limit = +req.query.limit || 2;
-  let serviceType = await ServiceType.findOne({
-    where: { name: req.params.serviceName }
-  });
-
-  if (!serviceType) {
-    return next(new ErrorResponse('Service Type does not exists', 400));
-  }
-  let allServices = await serviceType.getServiceProvide();
-
-  let services = allServices.slice(page * limit, page * limit + limit);
-  let returnServices = [];
-  for (let service of services) {
-    let serviceDto = await transferServiceDto(service);
-    returnServices.unshift(serviceDto);
-  }
-
-  res.json({
-    serviceDtoList: returnServices,
-    size: allServices.length
-  });
-});
-
-exports.getProvideByLanguage = asyncHandler(async (req, res, next) => {
-  const page = req.query.page || 0;
-  const limit = +req.query.limit || 2;
-
-  let language = await Language.findOne({
-    where: { name: req.params.languageName }
-  });
-
-  if (!language) {
-    return next(new ErrorResponse('language does not exists', 400));
-  }
-  let allServices = await language.getServiceProvide();
-
-  let services = allServices.slice(page * limit, page * limit + limit);
-  let returnServices = [];
-  for (let service of services) {
-    let serviceDto = await transferServiceDto(service);
-    returnServices.unshift(serviceDto);
-  }
-
-  res.json({
-    serviceDtoList: returnServices,
-    size: allServices.length
-  });
-});
-
-exports.getProvideByServiceNameAndLanguage = asyncHandler(
-  async (req, res, next) => {
-    const page = +req.query.page || 0;
-    const limit = +req.query.limit || 2;
-    let serviceType = await ServiceType.findOne({
-      where: { name: req.params.serviceName }
-    });
-
-    if (!serviceType) {
-      return next(new ErrorResponse('Service Type does not exists', 400));
-    }
-    let language = await Language.findOne({
-      where: { name: req.params.languageName }
-    });
-
-    if (!language) {
-      return next(new ErrorResponse('language does not exists', 400));
-    }
-    let allServices = await ServiceProvide.findAll({
-      where: {
-        service_type_id: serviceType.id,
-        language_id: language.id
-      }
-    });
-
-    let services = allServices.slice(page * limit, page * limit + limit);
-    let returnServices = [];
-    for (let service of services) {
-      let serviceDto = await transferServiceDto(service);
-      returnServices.unshift(serviceDto);
-    }
-
-    res.json({
-      serviceDtoList: returnServices,
-      size: allServices.length
-    });
-  }
-);
 
 exports.updateProvide = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
@@ -165,3 +68,12 @@ exports.updateProvide = asyncHandler(async (req, res, next) => {
   let returnProvide = await transferServiceDto(serviceProvide);
   res.json(returnProvide);
 });
+
+let transferServiceDtos = async services => {
+  let returnServices = [];
+  for (let service of services) {
+    let serviceDto = await transferServiceDto(service);
+    returnServices.unshift(serviceDto);
+  }
+  return returnServices;
+};
