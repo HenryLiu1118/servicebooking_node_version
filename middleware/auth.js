@@ -1,19 +1,19 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const ErrorResponse = require('./errorResponse');
 
-exports.auth = function(req, res, next) {
+exports.auth = (req, res, next) => {
   const token = req.header('Authorization');
 
   if (!token) {
-    return res.status(401).json({ msg: 'No Token Found' });
+    return next(new ErrorResponse('No Token Found', 401));
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     req.userId = decoded.id;
     next();
   } catch (err) {
-    res.status(401).json({ msg: 'Token is inValid' });
+    return next(new ErrorResponse('Token is inValid', 401));
   }
 };
 
@@ -22,9 +22,12 @@ exports.authorize = (...roles) => {
     let user = await User.findByPk(req.userId);
     let role = await user.getRole();
     if (!roles.includes(role.name)) {
-      return res
-        .status(401)
-        .json({ msg: 'Not authorized to access this route' });
+      return next(
+        new ErrorResponse(
+          `User role: ${role.name} is not authorized to access this route`,
+          403
+        )
+      );
     }
     next();
   };

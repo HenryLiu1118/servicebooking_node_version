@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/connectDB');
+const errorHandler = require('./middleware/errorHandler');
 
 // Load env variables
 dotenv.config({ path: './config/config.env' });
@@ -25,6 +26,8 @@ app.use('/api/provider', require('./routes/api/Provide'));
 app.use('/api/request', require('./routes/api/Request'));
 app.use('/api/comment', require('./routes/api/Comment'));
 app.use('/api/admin', require('./routes/api/Admin'));
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8080;
 
