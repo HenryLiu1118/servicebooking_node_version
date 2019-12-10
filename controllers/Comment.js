@@ -91,7 +91,7 @@ exports.checkCommentByRequestOrder = asyncHandler(async (req, res, next) => {
   let comment = await Comment.findOne({
     where: {
       user_id: req.userId,
-      requestOrder_id: req.params.RequestOrderId
+      request_order_id: req.params.RequestOrderId
     }
   });
   if (!comment) {
