@@ -35,8 +35,8 @@ exports.transferRequestToDto = async requestOrder => {
     info: requestOrder.info,
     active: requestOrder.active,
     userDto: userDto,
-    created_At: requestOrder.created_At,
-    updated_At: requestOrder.updated_At
+    created_At: requestOrder.create_at,
+    updated_At: requestOrder.update_at
   };
   return ans;
 };
