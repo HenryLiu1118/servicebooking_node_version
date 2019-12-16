@@ -13,21 +13,28 @@ exports.postComment = asyncHandler(async (req, res, next) => {
   }
 
   const { detail } = req.body;
+
   let requestOrder = await RequestOrder.findByPk(req.params.RequestOrderId);
 
   let user = await User.findByPk(req.userId);
   let comment = await Comment.findOne({
-    user_id: user.id,
-    requesrOrder_id: requestOrder.id
+    where: {
+      user_id: user.id,
+      request_order_id: requestOrder.id
+    }
   });
+
   if (comment) {
     return next(
       new ErrorResponse('You have already comment this Request!', 400)
     );
   }
+
+  console.log('===========' + (comment === null));
   comment = await Comment.create({
     detail: detail
   });
+
   comment.setRequestOrder(requestOrder);
   comment.setUser(user);
 
@@ -94,8 +101,9 @@ exports.checkCommentByRequestOrder = asyncHandler(async (req, res, next) => {
       request_order_id: req.params.RequestOrderId
     }
   });
+
   if (!comment) {
-    res.status(200).json(null);
+    return res.status(200).json(null);
   }
   let returnComment = await transferCommentDto(comment);
   res.status(200).json(returnComment);
