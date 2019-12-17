@@ -10,7 +10,12 @@ const { transferUserDto } = require('../middleware/Dto');
 exports.updateProfile = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new ErrorResponse(errors.array()[0].msg, 400));
+    return res.status(400).json({
+      errors: errors.array().map(err => {
+        return err.msg;
+      })
+    });
+    //return next(new ErrorResponse(errors.array()[0].msg, 400));
   }
   const {
     firstname,

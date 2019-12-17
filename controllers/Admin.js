@@ -11,7 +11,12 @@ const { transferUserDto } = require('../middleware/Dto');
 exports.postRole = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new ErrorResponse(errors.array()[0].msg, 400));
+    return res.status(400).json({
+      errors: errors.array().map(err => {
+        return err.msg;
+      })
+    });
+    //return next(new ErrorResponse(errors.array()[0].msg, 400));
   }
 
   const { name } = req.body;
@@ -34,7 +39,12 @@ exports.postRole = asyncHandler(async (req, res, next) => {
 exports.postServiceType = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new ErrorResponse(errors.array()[0].msg, 400));
+    return res.status(400).json({
+      errors: errors.array().map(err => {
+        return err.msg;
+      })
+    });
+    //return next(new ErrorResponse(errors.array()[0].msg, 400));
   }
 
   const { name } = req.body;
@@ -58,7 +68,12 @@ exports.postServiceType = asyncHandler(async (req, res, next) => {
 exports.postLanguage = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new ErrorResponse(errors.array()[0].msg, 400));
+    return res.status(400).json({
+      errors: errors.array().map(err => {
+        return err.msg;
+      })
+    });
+    //return next(new ErrorResponse(errors.array()[0].msg, 400));
   }
 
   const { name } = req.body;
@@ -70,7 +85,7 @@ exports.postLanguage = asyncHandler(async (req, res, next) => {
   });
 
   if (languageObj) {
-    return next(new ErrorResponse('languagee  already exists', 400));
+    return next(new ErrorResponse('language  already exists', 400));
   }
 
   languageObj = await Language.create({

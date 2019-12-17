@@ -61,7 +61,12 @@ exports.deleteRequest = asyncHandler(async (req, res, next) => {
 exports.updateRequest = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new ErrorResponse(errors.array()[0].msg, 400));
+    return res.status(400).json({
+      errors: errors.array().map(err => {
+        return err.msg;
+      })
+    });
+    //return next(new ErrorResponse(errors.array()[0].msg, 400));
   }
 
   const { info, servicetype } = req.body;
@@ -93,7 +98,12 @@ exports.updateRequest = asyncHandler(async (req, res, next) => {
 exports.postRequest = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new ErrorResponse(errors.array()[0].msg, 400));
+    return res.status(400).json({
+      errors: errors.array().map(err => {
+        return err.msg;
+      })
+    });
+    //return next(new ErrorResponse(errors.array()[0].msg, 400));
   }
 
   const { info, servicetype } = req.body;
