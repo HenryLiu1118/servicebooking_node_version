@@ -86,9 +86,10 @@ exports.updateRequest = asyncHandler(async (req, res, next) => {
   }
 
   requestOrder.info = info;
+  requestOrder.update_at = new Date();
   requestOrder.setServiceType(serviceType);
   await requestOrder.save({
-    fields: ['info']
+    fields: ['info', 'update_at']
   });
 
   let returnRequest = await transferRequestToDto(requestOrder);
@@ -116,7 +117,8 @@ exports.postRequest = asyncHandler(async (req, res, next) => {
   let user = await User.findByPk(req.userId);
   let requestOrder = await RequestOrder.create({
     info: info,
-    active: true
+    active: true,
+    create_at: new Date()
   });
   await requestOrder.setUser(user);
   let userInfo = await user.getUserInfo();

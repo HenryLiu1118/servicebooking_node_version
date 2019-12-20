@@ -35,6 +35,11 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
   }
 
   let user = await User.findByPk(req.userId);
+  user.update_at = new Date();
+  await user.save({
+    fields: ['update_at']
+  });
+
   let userInfo = await user.getUserInfo();
   userInfo.firstname = firstname;
   userInfo.lastname = lastname;

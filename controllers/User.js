@@ -126,7 +126,8 @@ exports.Register = asyncHandler(async (req, res, next) => {
 
   user = await User.create({
     username: username,
-    password: cryptedPassword
+    password: cryptedPassword,
+    create_at: new Date()
   });
 
   user.setRole(roleObj);

@@ -17,12 +17,10 @@ const User = sequelize.define(
     },
     password: Sequelize.STRING,
     create_at: {
-      type: Sequelize.DATE,
-      default: Date.now
+      type: Sequelize.DATE
     },
     update_at: {
-      type: Sequelize.DATE,
-      default: Date.now
+      type: Sequelize.DATE
     }
   },
   {
