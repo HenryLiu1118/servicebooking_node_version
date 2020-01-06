@@ -27,7 +27,7 @@ exports.postRole = asyncHandler(async (req, res, next) => {
   });
 
   if (roleObj) {
-    return next(new ErrorResponse('Rolename  already exists', 400));
+    return next(new ErrorResponse('Rolename already exists', 400));
   }
 
   roleObj = await Role.create({

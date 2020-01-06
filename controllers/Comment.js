@@ -35,7 +35,7 @@ exports.postComment = asyncHandler(async (req, res, next) => {
     );
   }
 
-  console.log('===========' + (comment === null));
+  
   comment = await Comment.create({
     detail: detail
   });
@@ -124,7 +124,7 @@ let findCommentById = async (CommentId, userId) => {
   let user = await User.findByPk(userId);
   let commentUser = await comment.getUser();
 
-  if (user.id !== requestOrderUser.id || user.id !== commentUser.id) {
+  if (user.id !== requestOrderUser.id && user.id !== commentUser.id) {
     return null;
   }
   return comment;
