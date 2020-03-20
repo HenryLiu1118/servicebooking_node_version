@@ -26,6 +26,7 @@ app.use('/api/request', require('./routes/api/Request'));
 app.use('/api/comment', require('./routes/api/Comment'));
 app.use('/api/admin', require('./routes/api/Admin'));
 
+console.log('test');
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
