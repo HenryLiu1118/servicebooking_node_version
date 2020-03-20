@@ -18,7 +18,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
-
+console.log('test from 2');
 app.use('/api/users', require('./routes/api/User'));
 app.use('/api/userinfo', require('./routes/api/UserInfo'));
 app.use('/api/provider', require('./routes/api/Provide'));
